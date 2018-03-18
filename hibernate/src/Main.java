@@ -4,7 +4,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -17,8 +19,11 @@ public class Main {
 
 	public static void main(String[] args) {
 		Main main = new Main();
-		main.printSchools();
+		//main.printSchools();
+		//main.addNewData();
+		main.getAndUpdate();
 		main.close();
+		
 	}
 
 	public Main() {
@@ -46,7 +51,39 @@ public class Main {
 			}
 			
 		}
+	
 	}
+	private void addNewData(){
+		
+		
+		School newSchool = new School();
+		newSchool.setName("AGH");
+		newSchool.setAddress("Reymonta");
+		//newSchool.setId(1);
+		Set<SchoolClass> klasy = new HashSet<SchoolClass>();
+		newSchool.setClasses(klasy);
+		
+		Transaction transaction = session.beginTransaction();
+		session.save(newSchool); // gdzie newSchool to instancja nowej szko³y
+		transaction.commit();
+		//session.saveOrUpdate(newSchool); // mozna zasewoac i updatetowac metota ale w pliku xml trzeba usunac <generator class="native"></generator>
+	}
+	
+	private void getAndUpdate() {
+		
+		Criteria crit = session.createCriteria(School.class);
+		List<School> schools = crit.list();
+		School AGH = schools.get(0);
+		
+	AGH.setAddress("DSfdsfdsf");
+	
+	Transaction transaction = session.beginTransaction();
+	session.saveOrUpdate(AGH); // gdzie newSchool to instancja nowej szko³y
+	transaction.commit();
+	//session.saveOrUpdate(newSchool); 
+	
+	}
+	
 
 	private void jdbcTest() {
 		Connection conn = null;
